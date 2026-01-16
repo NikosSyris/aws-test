@@ -4,9 +4,13 @@ import com.example.order.core.domain.model.Order;
 import com.example.order.core.domain.model.OrderStatus;
 import com.example.order.core.domain.port.OrderRepository;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class OrderProcessor {
+
+    private static final Logger log = LoggerFactory.getLogger(OrderProcessor.class);
 
     private final OrderRepository orderRepository;
 
@@ -16,6 +20,8 @@ public class OrderProcessor {
 
     public void process(Order order) {
         try {
+            log.info("Processing order {}", order.getOrderId());
+
             order.setStatus(OrderStatus.PROCESSING);
             orderRepository.save(order);
 

@@ -1,8 +1,13 @@
 package com.example.order.core.domain.model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 
-public class Order {
+public class Order implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private String orderId;
     private String customerId;
