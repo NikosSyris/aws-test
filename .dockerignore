@@ -1,0 +1,13 @@
+# Ignore build output
+**/target
+
+# Ignore IDE files
+.idea
+*.iml
+
+# Ignore git
+.git
+.gitignore
+
+# Ignore OS junk
+.DS_Store

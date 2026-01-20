@@ -1,0 +1,56 @@
+
+services:
+  localstack:
+    image: localstack/localstack:2.1
+    container_name: localstack
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      - SERVICES=sqs
+      - DEFAULT_REGION=eu-central-1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - ./localstack:/tmp/localstack
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4566/_localstack/health" ]
+      interval: 5s
+      retries: 20
+
+  order-api:
+    build:
+      context: .
+      dockerfile: order-api/Dockerfile
+    container_name: order-api
+    depends_on:
+      localstack:
+        condition: service_healthy
+    environment:
+      - SQS_ENDPOINT=http://localstack:4566/000000000000/sqs
+      - AWS_REGION=eu-central-1
+      - AWS_DEFAULT_REGION=eu-central-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      retries: 10
+
+  order-worker:
+    build:
+      context: .
+      dockerfile: order-worker/Dockerfile
+    container_name: order-worker
+    depends_on:
+      order-api:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    environment:
+      - SQS_ENDPOINT=http://localstack:4566/000000000000/sqs
+      - AWS_REGION=eu-central-1
+      - AWS_DEFAULT_REGION=eu-central-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test

@@ -41,4 +41,18 @@
             <artifactId>auth</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- use Spring Boot plugin inherited from parent -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.example.order.worker.OrderWorkerApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
